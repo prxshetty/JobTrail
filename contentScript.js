@@ -17,12 +17,13 @@ console.log('Content script loaded');
       const subject = subjectElement ? subjectElement.innerText : '';
       const snippet = snippetElement ? snippetElement.innerText : '';
 
-      const emailContent = `${subject} ${snippet}`;
+      const emailContent = `${snippet}`;
 
       chrome.runtime.sendMessage(
         {
           action: 'categorizeEmail',
-          content: emailContent
+          content: emailContent,
+          subject: subject
         },
         (response) => {
           console.log('Categorization response:', response);
@@ -52,11 +53,26 @@ console.log('Content script loaded');
       case 'assessment':
         labelSpan.style.backgroundColor = '#ff9800';
         break;
+      case 'applicant':
+        labelSpan.style.backgroundColor = '#e91e63';
+        break;
+      case 'job alerts':
+        labelSpan.style.backgroundColor = '#00bcd4'; // Cyan color for Job Alerts
+        break;
+      case 'n':
+        labelSpan.style.backgroundColor = '#9c27b0';
+        break;
+      case 'not job-related':
+        labelSpan.style.backgroundColor = '#9e9e9e';
+        labelSpan.style.display = 'none'; // Hide the label for non-job-related emails
+        break;
       default:
         labelSpan.style.backgroundColor = '#9e9e9e';
     }
 
-    emailItem.querySelector('.yW').appendChild(labelSpan);
+    if (category.toLowerCase() !== 'not job-related') {
+      emailItem.querySelector('.yW').appendChild(labelSpan);
+    }
   }
 
   setInterval(processEmails, 5000);

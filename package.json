@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "webpack --mode production"
+    "build": "webpack"
   },
   "name": "jobtrail",
   "version": "1.0.0",
