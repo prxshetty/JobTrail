@@ -45,39 +45,46 @@ async function categorizeEmail(emailContent, subject) {
   console.log('API Key present, making API call...');
   const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
-  // Simplify and focus the email content
   const focusedContent = emailContent
     .replace(/^(From:|To:|Cc:|Bcc:|Date:|Subject:).*\n/gm, '')
-    .replace(/\n-- \n[\s\S]*$/, '') // Remove signature
-    .replace(/\n>{2,}[\s\S]*$/, '') // Remove quoted text
+    .replace(/\n-- \n[\s\S]*$/, '')
+    .replace(/\n>{1,}[\s\S]*$/, '')
+    .replace(/^Advertisement:[\s\S]*?(?=\n\n|\n$)/gm, '')
+    .replace(/\n.*(?:Disclaimer|Copyright|All rights reserved).*$/gis, '')
+    .replace(/Top jobs looking for your skills[\s\S]*$/, '') // Remove job listings at the end
     .split('\n')
-    .filter(line => line.trim() !== '')
-    .slice(0, 3)
+    .map(line => line.trim())
+    .filter(line => line !== '')
     .join('\n')
-    .trim();
+    .trim()
+    .replace(/\s+/g, ' ');
 
   console.log('Focused Content:', focusedContent);
 
-  const prompt = `Analyze the following email subject and the first 2-3 lines of the email content.
-  Pay special attention to the subject and key phrases within these initial lines, as they often contain crucial information:
+  const prompt = `Analyze the following email subject and content:
   
   Subject: "${subject}"
   
-  First 2-3 lines: "${focusedContent}"
-  
+  Simplified Content: "${focusedContent}"
+
   Determine if this email is directly related to the recipient's job application process. 
   If it is job-related, categorize it into one of the following: Rejection, Acceptance, Interview, Assessment, Applicant, Job Alerts, N. 
   
   Use these guidelines:
-  - "Rejection" for emails indicating an application was not successful. Look for phrases like "we will not be moving forward", "unfortunately", "regret to inform you".
+  - "Rejection" for emails indicating an application was not successful. This takes precedence over all other categories. Look for phrases like  "unfortunately", "we will not be moving forward", "regret to inform you", even if the email mentions the original application.
   - "Acceptance" for job offers or positive responses to applications. Look for phrases like "congratulations", "we are pleased to offer", "welcome to the team".
-  - "Interview" for interview invitations or scheduling
-  - "Assessment" for requests to complete tests or assignments
-  - "Applicant" for emails where the recipient is applying for a job or inquiring about job opportunities
-  - "Job Alerts" for notifications about job openings
-  - "N" for other job-related emails that don't fit the above categories
+  - "Interview" ONLY for job interview invitations or scheduling related to a job application. The email must explicitly mention a job interview to the sender(NOT podcast interviews, media interviews, customer interviews).
+  - "Assessment" for requests to complete tests or assignments as part of a job application process.
+  - "Applicant" for emails where the recipient is applying for a job or inquiring about job opportunities.
+  - "Job Alerts" for notifications about job openings.
+  - "N" for other job-related emails that don't fit the above categories.
   
-  If it is not directly related to the recipient's job application process, respond with "Not Job-Related". 
+  
+  If the email is not directly related to the recipient's job application process, respond with "Not Job-Related". 
+  
+  Consider the context carefully. Emails about orders, blogs, general newsletters, or non-job-related correspondence are likely "Not Job-Related".
+  
+  Prioritize the main content of the email over any additional job listings or advertisements that may be included.
   
   Respond with only the category name.`;
 
