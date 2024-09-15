@@ -6,3 +6,12 @@
   font-size: 10px;
   font-weight: bold;
 }
+
+.job-trail-label {
+    background-color: #e0e0e0;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
