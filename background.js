@@ -71,21 +71,30 @@ async function categorizeEmail(emailContent, subject) {
   If it is job-related, categorize it into one of the following: Rejection, Acceptance, Interview, Assessment, Applicant, Job Alerts, N. 
   
   Use these guidelines:
-  - "Rejection" for emails indicating an application was not successful. This takes precedence over all other categories. Look for phrases like  "unfortunately", "we will not be moving forward", "regret to inform you", even if the email mentions the original application.
+- "Rejection" for emails indicating an application was not successful. This takes precedence over all other categories, even if the email mentions the original application or job role. Look for phrases like "unfortunately", "we will not be moving forward", "regret to inform you", "application was not successful".
   - "Acceptance" for job offers or positive responses to applications. Look for phrases like "congratulations", "we are pleased to offer", "welcome to the team".
   - "Interview" ONLY for job interview invitations or scheduling related to a job application. The email must explicitly mention a job interview to the sender(NOT podcast interviews, media interviews, customer interviews).
   - "Assessment" for requests to complete tests or assignments as part of a job application process.
   - "Applicant" for emails where the recipient is applying for a job or inquiring about job opportunities.
-  - "Job Alerts" for notifications about job openings.
+  - "Job Alerts" for notifications about job openings, job alerts, job listings.
   - "N" for other job-related emails that don't fit the above categories.
   
-  
+Important Instructions:
+
+- Focus solely on the main message of the email.Ignore any additional job listings, promotions, or advertisements when determining the category.
+
+- Prioritize rejection indicators** over all other content. If phrases like "unfortunately" or "we will not be moving forward" are present, categorize the email as "Rejection".
+
+- Do not be influenced by any positive or neutral language that comes after the rejection message.
+
+  Some emails may contain multiple job listings. Only consider the email content that is directly related to the recipient's job application process.
+
   If the email is not directly related to the recipient's job application process, respond with "Not Job-Related". 
   
   Consider the context carefully. Emails about orders, blogs, general newsletters, or non-job-related correspondence are likely "Not Job-Related".
   
-  Prioritize the main content of the email over any additional job listings or advertisements that may be included.
-  
+  Prioritize the main content of the email over any additional job listings or advertisements that may be included. If an email contains a rejection statement, categorize it as "Rejection" even if it includes job listings or follow-up job alerts.
+
   Respond with only the category name.`;
 
   try {
