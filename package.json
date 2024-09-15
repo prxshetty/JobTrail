@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "build": "webpack --mode production"
+  },
+  "name": "jobtrail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "background.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv-webpack": "^8.1.0",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
