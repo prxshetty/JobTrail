@@ -13,9 +13,11 @@ console.log('Content script loaded');
 
       const subjectElement = emailItem.querySelector('.bog');
       const snippetElement = emailItem.querySelector('.y2');
+      const senderElement = emailItem.querySelector('.yP, .zF'); // Added this line
 
       const subject = subjectElement ? subjectElement.innerText : '';
       const snippet = snippetElement ? snippetElement.innerText : '';
+      const sender = senderElement ? senderElement.innerText : ''; // Added this line
 
       const emailContent = `${snippet}`;
 
@@ -23,7 +25,8 @@ console.log('Content script loaded');
         {
           action: 'categorizeEmail',
           content: emailContent,
-          subject: subject
+          subject: subject,
+          sender: sender // Added this line
         },
         (response) => {
           console.log('Categorization response:', response);
@@ -57,22 +60,19 @@ console.log('Content script loaded');
         labelSpan.style.backgroundColor = '#e91e63';
         break;
       case 'job alerts':
-        labelSpan.style.backgroundColor = '#00bcd4'; // Cyan color for Job Alerts
+        labelSpan.style.backgroundColor = '#00bcd4';
         break;
       case 'n':
         labelSpan.style.backgroundColor = '#9c27b0';
         break;
       case 'not job-related':
         labelSpan.style.backgroundColor = '#9e9e9e';
-        labelSpan.style.display = 'none'; // Hide the label for non-job-related emails
         break;
       default:
         labelSpan.style.backgroundColor = '#9e9e9e';
     }
 
-    if (category.toLowerCase() !== 'not job-related') {
-      emailItem.querySelector('.yW').appendChild(labelSpan);
-    }
+    emailItem.querySelector('.yW').appendChild(labelSpan);
   }
 
   setInterval(processEmails, 5000);

@@ -17,8 +17,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log('Received categorizeEmail request:', request.content);
     const emailContent = request.content;
     const subject = request.subject;
+    const sender = request.sender; // Added this line
 
-    categorizeEmail(emailContent, subject)
+    categorizeEmail(emailContent, subject, sender) // Added sender parameter
       .then((category) => {
         console.log('Email categorized as:', category);
         sendResponse({ category });
@@ -32,9 +33,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-async function categorizeEmail(emailContent, subject) {
+async function categorizeEmail(emailContent, subject, sender) { // Added sender parameter
   console.log('Categorizing email...');
   console.log('Original Subject:', subject);
+  console.log('Original Sender:', sender); // Added this line
   console.log('Original Content:', emailContent);
   
   if (!OPENAI_API_KEY) {
@@ -63,40 +65,39 @@ async function categorizeEmail(emailContent, subject) {
   console.log(focusedContent);
   console.log('Focused Content Length:', focusedContent.length);
 
-  const prompt = `Analyze the following email subject and content:
+  const prompt = `Analyze the following email subject, sender, and content:
   
   Subject: "${subject}"
+  Sender: "${sender}"
   
   Simplified Content: "${focusedContent}"
 
   Determine if this email is directly related to the recipient's job application process. 
   If it is job-related, categorize it into one of the following: Rejection, Acceptance, Interview, Assessment, Applicant, Job Alerts, N. 
   
-  Use these guidelines:
-  - "Rejection" for emails indicating an application was not successful. This takes precedence over all other categories, even if the email mentions the original application or job role. Look for phrases like "unfortunately", "we will not be moving forward", "regret to inform you", "application was not successful".
-- "Acceptance" for job offers or positive responses to applications. Look for phrases like "congratulations", "we are pleased to offer", "welcome to the team".
- - "Interview" ONLY for job interview invitations or scheduling related to a job application. The email must explicitly mention a job interview to the sender(NOT podcast interviews, media interviews, customer interviews).
-  - "Assessment" for requests to complete tests or assignments as part of a job application process.
-  - "Applicant" for emails where the recipient is applying for a job or inquiring about job opportunities.
-  - "Job Alerts" for emails about job openings, alerts, promotions, advertisements, or job listings.
-  - "N" for other job-related emails that don't fit the above categories.
+  Use these guidelines in order of priority:
+  1. If the sender is LinkedIn and the subject contains "Your application", categorize as:
+     - "Rejection" if the content indicates the application was unsuccessful (e.g., "unfortunately", "we will not be moving forward", "regret to inform you")
+     - "Acceptance" if the content indicates a positive outcome (e.g., "congratulations", "we are pleased to offer", "next steps")
+     - "Applicant" if the content is a status update that's neither a clear rejection nor acceptance
+  2. For other emails:
+     - "Rejection" for emails indicating an application was not successful. This takes highest precedence.
+     - "Acceptance" for job offers or positive responses to applications.
+     - "Interview" ONLY for job interview invitations or scheduling related to a job application. The email must explicitly mention a job interview for the recipient (NOT podcast interviews, media interviews, customer interviews).
+     - "Assessment" for requests to complete tests or assignments as part of a job application process.
+     - "Applicant" for emails where the recipient is applying for a job, inquiring about job opportunities, or receiving general updates about their application status.
+     - "Job Alerts" for notifications about new job openings or general job-related newsletters.
+     - "N" for other job-related emails that don't fit the above categories.
+  3. "Not Job-Related" for emails that are not related to job applications, interviews, or career opportunities.
+
+  Important notes:
+  - Pay special attention to emails from LinkedIn or other job platforms. These often contain status updates about applications.
+  - If an email contains both application status information and other job listings or alerts, prioritize the application status.
+  - Consider the sender's email address or name. Emails from known job boards, recruiting agencies, or company HR departments are likely job-related.
+  - Emails about orders, blogs, general newsletters, or non-job-related correspondence should be categorized as "Not Job-Related".
+
+  Prioritize the main content of the email over any additional job listings or advertisements that may be included.
   
-Important Instructions:
-
-- Focus solely on the main message of the email.
-
-- If an email contains a rejection statement, categorize it as "Rejection" even if it includes job listings or follow-up job alerts.
-
-- Prioritize rejection indicator over all other content. If phrases like "unfortunately" or "we will not be moving forward" are present in the email from LinkedIn, categorize the email as "Rejection".
-
-- Do not be influenced by any positive or neutral language that comes after the rejection message.
-
-  Some emails may contain multiple job listings. Only consider the email content that is directly related to the recipient's job application process.
-
-  If the email is not directly related to the recipient's job application process, respond with "Not Job-Related". 
-  
- 
-
   Respond with only the category name.`;
 
   try {
