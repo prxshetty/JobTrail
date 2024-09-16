@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Trail</title>
+    <style>
+        body { width: 300px; padding: 10px; font-family: Arial, sans-serif; }
+        button, select { width: 100%; margin-top: 10px; }
+        .pro-feature { color: #888; }
+    </style>
+</head>
+<body>
+    <h1>Job Trail</h1>
+    <select id="processingMode">
+        <option value="firstPage">First Page (Free Version)</option>
+        <option value="range">Range of Emails</option>
+        <option value="entireInbox" disabled class="pro-feature">Entire Inbox (Pro Version)</option>
+    </select>
+    <div id="rangeInputs" style="display: none;">
+        <input type="number" id="startRange" placeholder="Start" min="1">
+        <input type="number" id="endRange" placeholder="End" min="1">
+    </div>
+    <button id="processButton">Process Emails</button>
+    <button id="stopButton" disabled>Stop Processing</button>
+    <p id="statusMessage"></p>
+    <p>Emails labeled: <span id="labelCounter">0</span></p>
+    <script src="popup.bundle.js"></script>
+</body>
+</html>
