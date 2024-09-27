@@ -1,7 +1,7 @@
 # Job Trail
 
 Job Trail is a Chrome extension that automatically categorizes Gmail emails related to job applications based on their content. It uses Google's Cloud Console and GmailAPI to access the emails and their respective body content. It uses OpenAI's GPT model to analyze emails and apply labels, helping job seekers organize their application process more efficiently by categorizing them and labelling them.
-The reason I went with Google's API instead of the traditional Python script is because if you have a look at the github 
+The reason I went with Google's API instead of the traditional Python script is because using traditional Pyteserract for extracting textual information from Emails didn't accurately capture data, especially Linkedin and Amazon's Email Reponses and they had multiple DOM Elements contained which made the library extract only text.
 
 ## Table of Contents
 
