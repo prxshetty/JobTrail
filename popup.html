@@ -2,27 +2,98 @@
 <html>
 <head>
     <title>Job Trail</title>
-    <style>
-        body { width: 300px; padding: 10px; font-family: Arial, sans-serif; }
-        button, select { width: 100%; margin-top: 10px; }
-        .pro-feature { color: #888; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <h1>Job Trail</h1>
-    <select id="processingMode">
-        <option value="firstPage">First Page (Free Version)</option>
-        <option value="range">Range of Emails</option>
-        <option value="entireInbox" disabled class="pro-feature">Entire Inbox (Pro Version)</option>
-    </select>
-    <div id="rangeInputs" style="display: none;">
-        <input type="number" id="startRange" placeholder="Start" min="1">
-        <input type="number" id="endRange" placeholder="End" min="1">
+    <div class="container">
+        <nav>
+            <ul>
+                <li id="homeButton"><i class="fas fa-home"></i></li>
+                <li id="settingsButton"><i class="fas fa-cog"></i></li>
+                <li id="historyButton"><i class="fas fa-history"></i></li>
+            </ul>
+        </nav>
+        <div id="mainContent">
+            <h1>Job Trail</h1>
+            <select id="processingMode">
+                <option value="firstPage">First Page (Free Version)</option>
+                <option value="range">Range of Emails</option>
+                <option value="entireInbox" disabled class="pro-feature">Entire Inbox (Pro Version)</option>
+            </select>
+            <div id="rangeInputs" style="display: none;">
+                <input type="number" id="startRange" placeholder="Start" min="1">
+                <input type="number" id="endRange" placeholder="End" min="1">
+            </div>
+            <button id="processButton">Process Emails</button>
+            <button id="stopButton" disabled>Stop Processing</button>
+            <p id="statusMessage"></p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <p>Current LLM: <span id="currentLLM">API</span></p>
+            <p>Emails labeled: <span id="labelCounter">0</span></p>
+        </div>
+        <div id="historyContent" style="display: none;">
+            <div class="history-header">
+                <h2>Label History</h2>
+                <div class="button-group">
+                    <button id="resetHistoryButton" class="icon-button" title="Reset History">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    <div class="confirmation-buttons" style="display: none;">
+                        <button class="icon-button confirm" title="Confirm">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="icon-button cancel" title="Cancel">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table id="labelHistoryTable">
+                <thead>
+                    <tr>
+                        <th>Label</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody id="labelHistoryBody"></tbody>
+            </table>
+        </div>
+        <div id="settingsContent" style="display: none;">
+            <h2>Settings</h2>
+            <label for="llmProvider">LLM Provider:</label>
+            <select id="llmProvider">
+                <option value="openai">OpenAI (ChatGPT)</option>
+                <option value="anthropic">Anthropic (Claude)</option>
+                <option value="cohere">Cohere</option>
+                <option value="other">Other</option>
+            </select>
+            <div class="api-input-group">
+                <input type="text" id="apiInput" placeholder="Enter your API key">
+                <div class="button-group">
+                    <button id="saveApiButton" class="icon-button" title="Save API Key">
+                        <i class="fas fa-save"></i>
+                    </button>
+                    <div class="confirmation-buttons" style="display: none;">
+                        <button class="icon-button confirm" title="Confirm">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="icon-button cancel" title="Cancel">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <a href="https://github.com/prxshetty/JobTrail" target="_blank" id="githubLink">
+                <i class="fab fa-github"></i>
+            </a>
+        </footer>
     </div>
-    <button id="processButton">Process Emails</button>
-    <button id="stopButton" disabled>Stop Processing</button>
-    <p id="statusMessage"></p>
-    <p>Emails labeled: <span id="labelCounter">0</span></p>
     <script src="popup.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </body>
 </html>

@@ -157,6 +157,8 @@
         }
     }
 
+    let labelHistory = {};
+
     // Update the categorizeEmail function to create labels and apply them
     async function categorizeEmail(emailContent, subject, sender, messageId) {
         console.log('Categorizing email:', { subject, sender, messageId });
@@ -177,6 +179,9 @@
             console.log('Applying label to email');
             await applyLabelToEmail(messageId, labelId);
             console.log('Label applied successfully');
+            
+            // Update label history
+            labelHistory[category] = (labelHistory[category] || 0) + 1;
             
             return category;
         } catch (error) {
@@ -203,11 +208,21 @@
             Category:`;
 
         try {
+            const apiKey = await new Promise((resolve) => {
+                chrome.storage.sync.get(['apiKey'], function(result) {
+                    resolve(result.apiKey);
+                });
+            });
+
+            if (!apiKey) {
+                throw new Error('API key not set');
+            }
+
             const response = await fetch('https://api.openai.com/v1/chat/completions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+                    'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
                     model: "gpt-4o-mini",
@@ -269,18 +284,36 @@
     async function processAndLabelEmails(mode, start, end) {
         console.log(`Fetching inbox emails (Mode: ${mode}, Start: ${start}, End: ${end})`);
         const emails = await getInboxEmails(mode, start, end);
-        console.log(`Found ${emails.length} emails to process`);
+        const totalEmails = 40; // Fixed total of 40 emails
+        console.log(`Found ${emails.length} emails, processing up to ${totalEmails}`);
         labeledCount = 0;
+        
+        chrome.runtime.sendMessage({
+            action: 'updateTotal',
+            total: totalEmails
+        });
+
         for (const email of emails) {
-            if (!isProcessing) {
-                console.log('Processing stopped');
+            if (!isProcessing || labeledCount >= totalEmails) {
+                console.log('Processing stopped or reached total limit');
                 break;
             }
             console.log(`Processing email ${email.id}`);
             await processEmail(email.id);
+            labeledCount++;
+            chrome.runtime.sendMessage({
+                action: 'updateCounter',
+                count: labeledCount,
+                total: totalEmails
+            });
         }
-        console.log('Finished processing all emails');
-        chrome.runtime.sendMessage({action: 'processingComplete'});
+        
+        console.log('Finished processing emails');
+        chrome.runtime.sendMessage({
+            action: isProcessing ? 'processingComplete' : 'processingStopped',
+            count: labeledCount,
+            total: totalEmails
+        });
         isProcessing = false;
     }
 
@@ -298,9 +331,8 @@
         const category = await categorizeEmail(emailContent, subject, sender, messageId);
         console.log(`Email ${messageId} categorized as: ${category}`);
         
-        // Increment the labeled count and update the popup
-        labeledCount++;
-        chrome.runtime.sendMessage({action: 'updateCounter', count: labeledCount});
+        // We don't need to increment labeledCount or send a message here anymore
+        // as it's handled in the processAndLabelEmails function
     }
 
     // Modify the chrome.runtime.onMessage listener
@@ -312,11 +344,13 @@
             processAndLabelEmails(request.params.mode, request.params.start, request.params.end)
                 .then(() => {
                     console.log('Email processing completed successfully');
-                    chrome.runtime.sendMessage({action: 'processingComplete'});
                 })
                 .catch((error) => {
                     console.error('Error processing emails:', error);
-                    chrome.runtime.sendMessage({action: 'processingError', error: error.message});
+                    chrome.runtime.sendMessage({
+                        action: 'processingError',
+                        error: error.message
+                    });
                 })
                 .finally(() => {
                     isProcessing = false;
@@ -325,6 +359,11 @@
         } else if (request.action === 'stopProcessing') {
             console.log('Stopping email processing');
             isProcessing = false;
+            sendResponse({success: true});
+        } else if (request.action === 'getLabelHistory') {
+            sendResponse({history: labelHistory});
+        } else if (request.action === 'resetLabelHistory') {
+            labelHistory = {};
             sendResponse({success: true});
         }
         return true; // Indicates that the response is sent asynchronously
