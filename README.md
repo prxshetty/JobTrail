@@ -64,15 +64,19 @@ The reason I went with Google's API instead of the traditional Python script is 
 ## Screenshots
 
 - Pop-up.html:
-<img width="337" alt="image" src="https://github.com/user-attachments/assets/62b182ed-6bb4-4e7c-9112-6a805472b29f">
-
-<img width="338" alt="image" src="https://github.com/user-attachments/assets/22560a06-f3b7-46e1-9778-104a7479fa6e">
+  
+![JThome](https://github.com/user-attachments/assets/4d61069a-e2f4-4689-8a75-a59b9ee4719d)
+![JTProcessin](https://github.com/user-attachments/assets/acefb4ea-1c37-4b7a-8a05-8883328bfefc)
 
 
 - Labels Added:
+  
+![JTHistory](https://github.com/user-attachments/assets/07d4a480-a6c7-4f40-bacc-95bb6f3a3274)
 <img width="256" alt="GLabels" src="https://github.com/user-attachments/assets/f8a9bb50-3660-4234-9901-80d89e0a72b0">
 
+
 - Output of the console:
+  
 <img width="1504" alt="image" src="https://github.com/user-attachments/assets/bb526259-4232-4cfa-9c39-746052890d59">
 <img width="606" alt="image" src="https://github.com/user-attachments/assets/078c1638-d191-4106-8944-b22f746cb6a7">
 
@@ -80,9 +84,8 @@ The reason I went with Google's API instead of the traditional Python script is 
 
 Contributions are welcome! Please follow these steps to contribute:
 
-## TO DO
-
-- Add color coding to the labels from pop-up 
+## TO DO ( Tasks Done Counter : 2) 
+- Check the API Usage backend
+- Add Authentication to multiple users (Maybe)
 - Add an tree map view of the companies the user applied, rejection, acceptance, interview, etc.
-- Improve UI
-- 
+
