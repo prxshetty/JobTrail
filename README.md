@@ -1,5 +1,8 @@
 # JobTrail
 
+> **Note:**
+An alternative implementation is available in the `gcp` branch, which uses Google Cloud Platform services instead of local libraries for more precision. 
+Check out the `gcp` branch for a cloud-based implementation, the outputs and its code.
 
 ## Overview
 Job Trail is a Chrome extension designed to automatically categorize and track job application-related emails in Gmail. It helps job seekers maintain better organization of their job search process by automatically labeling emails based on their content (rejections, acceptances, interviews, etc.).
