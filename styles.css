@@ -221,7 +221,7 @@ footer {
 }
 
 #resetHistoryButton:hover {
-    background-color: #ff6b6b;
+    background-color: rgba(255, 59, 48, 0.1);
 }
 
 .history-header {
@@ -254,6 +254,7 @@ footer {
 #resetHistoryButton {
     color: #ff3b30;
     border: 1px solid #ff3b30;
+    background-color: rgba(40, 40, 40, 0.7);
 }
 
 #resetHistoryButton:hover {

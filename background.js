@@ -308,7 +308,7 @@
             });
         }
         
-        console.log('Finished processing emails');
+        console.log('Finished processing ema ils');
         chrome.runtime.sendMessage({
             action: isProcessing ? 'processingComplete' : 'processingStopped',
             count: labeledCount,

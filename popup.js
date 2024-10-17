@@ -132,15 +132,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayLabelHistory(history) {
         const labelHistoryBody = document.getElementById('labelHistoryBody');
         labelHistoryBody.innerHTML = '';
-        for (const [label, count] of Object.entries(history)) {
+        if (Object.keys(history).length === 0) {
             const row = document.createElement('tr');
-            const labelCell = document.createElement('td');
-            const countCell = document.createElement('td');
-            labelCell.textContent = label;
-            countCell.textContent = count;
-            row.appendChild(labelCell);
-            row.appendChild(countCell);
+            const cell = document.createElement('td');
+            cell.colSpan = 2;
+            cell.textContent = 'No history available';
+            cell.style.textAlign = 'center';
+            row.appendChild(cell);
             labelHistoryBody.appendChild(row);
+        } else {
+            for (const [label, count] of Object.entries(history)) {
+                const row = document.createElement('tr');
+                const labelCell = document.createElement('td');
+                const countCell = document.createElement('td');
+                labelCell.textContent = label;
+                countCell.textContent = count;
+                row.appendChild(labelCell);
+                row.appendChild(countCell);
+                labelHistoryBody.appendChild(row);
+            }
         }
     }
 
@@ -251,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCurrentLLM(result.llmProvider || 'openai');
         showMainContent();
     });
-    githubLink.href = "https://github.com/prxshetty/JobTrail";
+    githubLink.href = "https://github.com/prxshetty/JobTrail/tree/gcp";
 
     function resetLabelHistory() {
         chrome.runtime.sendMessage({action: 'resetLabelHistory'}, function(response) {
